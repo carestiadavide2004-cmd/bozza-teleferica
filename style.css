@@ -125,6 +125,34 @@ p { margin: 0; }
 .btn--light { background: rgba(250, 246, 238, .1); color: var(--avorio); border-color: rgba(250, 246, 238, .75); backdrop-filter: blur(2px); }
 .btn--light:hover { background: var(--avorio); color: var(--inchiostro); }
 
+/* "Contattaci": bordo oro con un riflesso che scorre lentamente */
+@property --giro {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.btn--contattaci {
+  min-height: 42px;
+  padding: .5rem 1.25rem;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(var(--bordeaux), var(--bordeaux)) padding-box,
+    conic-gradient(from var(--giro), #A8854A 0deg, #A8854A 220deg, #E8D3A0 270deg, #FFF6DC 290deg, #E8D3A0 310deg, #A8854A 360deg) border-box;
+  color: var(--avorio);
+  letter-spacing: .04em;
+  box-shadow: 0 0 0 0 rgba(207, 178, 122, 0), 0 6px 18px -8px rgba(0, 0, 0, .45);
+  animation: giro 6s linear infinite;
+  transition: box-shadow .4s var(--ease), transform .3s var(--ease);
+}
+.btn--contattaci:hover {
+  background:
+    linear-gradient(var(--bordeaux-scuro), var(--bordeaux-scuro)) padding-box,
+    conic-gradient(from var(--giro), #A8854A 0deg, #A8854A 220deg, #E8D3A0 270deg, #FFF6DC 290deg, #E8D3A0 310deg, #A8854A 360deg) border-box;
+  box-shadow: 0 0 18px -2px rgba(207, 178, 122, .45), 0 6px 18px -8px rgba(0, 0, 0, .45);
+}
+@keyframes giro { to { --giro: 360deg; } }
+
 .btn--hero {
   min-height: 58px;
   padding: 1rem 2.1rem;
@@ -302,6 +330,7 @@ p { margin: 0; }
 /* ---------- Hero ---------- */
 
 .hero {
+  --hero-fade: clamp(110px, 20vh, 200px);
   position: relative;
   min-height: 100vh;
   min-height: 100svh;
@@ -324,6 +353,23 @@ p { margin: 0; }
   object-fit: cover;
   object-position: 66% 60%;
 }
+/* sfumatura che fonde la foto con l'avorio della sezione successiva */
+.hero__fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--hero-fade);
+  pointer-events: none;
+  background: linear-gradient(to bottom,
+    rgba(250, 246, 238, 0) 0%,
+    rgba(250, 246, 238, .06) 18%,
+    rgba(250, 246, 238, .2) 36%,
+    rgba(250, 246, 238, .42) 54%,
+    rgba(250, 246, 238, .68) 72%,
+    rgba(250, 246, 238, .9) 88%,
+    var(--avorio) 100%);
+}
 /* si scurisce mentre si scorre (opacità guidata da script.js) */
 .hero__shade {
   position: absolute;
@@ -344,7 +390,7 @@ p { margin: 0; }
   width: 100%;
   max-width: var(--max);
   margin-inline: auto;
-  padding: 7rem var(--gutter) clamp(2.5rem, 7vh, 5rem);
+  padding: 7rem var(--gutter) calc(var(--hero-fade) + 1rem);
 }
 .hero__title {
   max-width: 13em;
@@ -403,7 +449,7 @@ p { margin: 0; }
 .scroll-hint {
   position: absolute;
   right: var(--gutter);
-  bottom: clamp(2.5rem, 7vh, 5rem);
+  bottom: calc(var(--hero-fade) + 1rem);
   z-index: 1;
   display: flex;
   flex-direction: column;
@@ -474,8 +520,9 @@ p { margin: 0; }
       linear-gradient(to top, rgba(30, 33, 18, .92) 0%, rgba(30, 33, 18, .72) 42%, rgba(30, 33, 18, .2) 72%, rgba(30, 33, 18, .05) 85%),
       linear-gradient(to bottom, rgba(30, 33, 18, .5), rgba(30, 33, 18, 0) 20%);
   }
-  .hero__content { padding-bottom: 6rem; }
-  .scroll-hint { right: 50%; transform: translateX(50%); bottom: .75rem; flex-direction: row; }
+  .hero { --hero-fade: 96px; }
+  .hero__content { padding-bottom: calc(var(--hero-fade) + 3.5rem); }
+  .scroll-hint { right: 50%; transform: translateX(50%); bottom: calc(var(--hero-fade) - .5rem); flex-direction: row; }
   .js .scroll-hint { animation-name: hero-in-x; }
   .scroll-hint__text { display: none; }
   .scroll-hint__line { height: 44px; }
@@ -875,8 +922,14 @@ p { margin: 0; }
 
 /* Dove siamo */
 .dove__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.5rem; align-items: center; }
+.dove__sub {
+  margin-top: 2.5rem;
+  font-family: var(--f-serif);
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
 .dove__addr {
-  margin-top: 1.5rem;
+  margin-top: .6rem;
   font-style: normal;
   font-family: var(--f-serif);
   font-size: 1.5rem;
@@ -1000,70 +1053,91 @@ p { margin: 0; }
 }
 .js .band.is-visible .band__text { opacity: 1; transform: none; filter: none; }
 
+/* Fascia finale: foto nitida al centro, sfumata in alto e in basso */
+.band--welcome { background: var(--avorio); }
+.band--welcome .band__media img { filter: none; transform: none; }
+.band--welcome .band__soft {
+  position: absolute;
+  inset: 0;
+  filter: blur(10px) brightness(.8) !important;
+  transform: scale(1.08) !important;
+}
+/* mai più grande dell'originale (960x638) */
+.band--welcome .band__sharp {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: min(100%, 960px);
+  height: min(100%, 638px);
+  object-fit: cover;
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%);
+}
+.band--welcome::after {
+  background:
+    linear-gradient(to bottom, var(--avorio) 0%, rgba(250, 246, 238, 0) 22%, rgba(250, 246, 238, 0) 78%, var(--avorio) 100%),
+    radial-gradient(ellipse 60% 45% at 50% 50%, rgba(24, 26, 15, .5) 0%, rgba(24, 26, 15, .2) 100%);
+}
+.band--welcome .band__text { text-shadow: 0 2px 24px rgba(0, 0, 0, .55), 0 0 2px rgba(0, 0, 0, .35); }
+
 /* Blocco telefono */
 .chiama {
-  position: relative;
-  max-width: 820px;
-  margin: 0 auto clamp(4rem, 9vw, 6.5rem);
-  padding: clamp(4rem, 9vw, 6.5rem) clamp(1.25rem, 5vw, 4rem) clamp(2.5rem, 6vw, 4rem);
-  border: 1px solid var(--oro);
-  border-radius: 50% 50% 4px 4px / clamp(110px, 22vw, 210px) clamp(110px, 22vw, 210px) 4px 4px;
-  background: linear-gradient(to bottom, #FFFDF8, var(--pietra));
-  text-align: center;
+  margin-top: 2rem;
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  border: 1px solid var(--pietra-scura);
+  border-left: 2px solid var(--oro);
+  background: #FFFDF8;
 }
 .chiama__invite {
   font-family: var(--f-serif);
-  font-size: clamp(1.4rem, 3.4vw, 2rem);
-  line-height: 1.25;
+  font-size: clamp(1.25rem, 2.6vw, 1.5rem);
+  line-height: 1.3;
   color: var(--oliva);
-  text-wrap: balance;
 }
 .chiama__numero {
-  display: block;
-  margin-top: clamp(.75rem, 2vw, 1.25rem);
+  display: inline-block;
+  margin-top: .5rem;
   font-family: var(--f-serif);
-  font-size: clamp(2.6rem, 11.5vw, 6.6rem);
-  line-height: 1;
+  font-size: clamp(2.3rem, 6.5vw, 3.4rem);
+  line-height: 1.05;
   letter-spacing: .03em;
   white-space: nowrap;
   color: var(--bordeaux);
   text-decoration: none;
 }
 .chiama__numero:hover { color: var(--bordeaux-scuro); }
-.chiama__numero::after {
-  content: "";
-  display: block;
-  width: 72px;
-  height: 1px;
-  margin: clamp(1.25rem, 3vw, 1.75rem) auto 0;
-  background: var(--oro);
-}
 .chiama__azioni {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: .9rem;
-  margin-top: clamp(1.5rem, 4vw, 2.25rem);
+  gap: .75rem;
+  margin-top: 1.25rem;
 }
 .chiama__azioni .btn { border-radius: 999px; }
-.chiama__azioni svg {
+.chiama__azioni svg,
+.btn--facebook svg,
+.footer__social svg {
   width: 20px;
   height: 20px;
+  flex: none;
+}
+.chiama__azioni svg {
   fill: none;
   stroke: currentColor;
   stroke-width: 1.5;
   stroke-linejoin: round;
 }
+.btn--facebook svg,
+.footer__social svg { fill: currentColor; }
 .chiama__btn {
   position: relative;
-  min-height: 64px;
-  padding: 0 2.6rem;
-  gap: .7rem;
+  min-height: 56px;
+  padding: 0 2rem;
+  gap: .65rem;
   background: var(--bordeaux);
   color: var(--avorio);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   letter-spacing: .03em;
-  box-shadow: 0 14px 30px -14px rgba(123, 31, 44, .8);
+  box-shadow: 0 12px 26px -14px rgba(123, 31, 44, .8);
   transition: background-color .3s var(--ease), transform .3s var(--ease);
 }
 .chiama__btn:hover { background: var(--bordeaux-scuro); transform: translateY(-2px); }
@@ -1079,13 +1153,13 @@ p { margin: 0; }
 }
 @keyframes alone {
   0% { box-shadow: 0 0 0 0 rgba(123, 31, 44, .45); }
-  70%, 100% { box-shadow: 0 0 0 18px rgba(123, 31, 44, 0); }
+  70%, 100% { box-shadow: 0 0 0 16px rgba(123, 31, 44, 0); }
 }
-.chiama__copia { min-height: 64px; padding: 0 1.8rem; gap: .6rem; background: #FFFDF8; }
-.chiama__note { margin-top: 1.5rem; font-size: 1rem; }
+.chiama__copia { min-height: 56px; padding: 0 1.5rem; gap: .55rem; background: #FFFDF8; }
+.chiama__note { margin-top: 1rem; font-size: .98rem; }
 
 /* Domande frequenti */
-.faq { background: var(--pietra); }
+.faq { background: var(--avorio); }
 .faq .intro a { color: var(--bordeaux); font-weight: 500; text-underline-offset: 3px; }
 .faq__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.5rem; }
 .faq__list { border-top: 1px solid var(--pietra-scura); }
@@ -1162,6 +1236,18 @@ p { margin: 0; }
 .footer__brand .logo__sub { font-size: .85rem; color: var(--oro-chiaro); }
 .footer__contacts p + p { margin-top: .25rem; }
 .footer__contacts a { color: var(--avorio); text-decoration: none; font-weight: 500; }
+.footer__social {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  min-height: 44px;
+  margin-top: .9rem;
+  padding: .4rem 1.1rem .4rem .8rem;
+  border: 1px solid rgba(207, 178, 122, .5);
+  border-radius: 999px;
+  transition: border-color .25s var(--ease), background-color .25s var(--ease);
+}
+.footer__social:hover { border-color: var(--oro-chiaro); background: rgba(250, 246, 238, .06); }
 .footer__credit {
   max-width: var(--max);
   margin: 3rem auto 0;
@@ -1425,7 +1511,8 @@ p { margin: 0; }
   .richiesta__grid { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: 5rem; align-items: start; }
   .richiesta__text { position: sticky; top: calc(var(--header-h) + 2rem); }
 
-  .dove__grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 5rem; }
+  .dove__grid { grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: 4.5rem; align-items: start; }
+  .dove__map { position: sticky; top: calc(var(--header-h) + 2rem); aspect-ratio: 4 / 5; }
 }
 
 /* ---------- Movimento ridotto ---------- */
@@ -1441,6 +1528,7 @@ p { margin: 0; }
   .js .reveal { opacity: 1; transform: none; }
   .scroll-hint__line::after { display: none; }
   .chiama__btn::before { animation: none; display: none; }
+  .btn--contattaci { animation: none; }
   .js .band__text { opacity: 1; transform: none; filter: none; }
   .js .hero__img { animation: none; }
 }
