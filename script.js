@@ -154,53 +154,44 @@
   // escluse le immagini a tutta larghezza (hero e fasce)
   var slides = Array.prototype.slice.call(document.querySelectorAll('main figure, main .gallery__item'))
     .filter(function (el) { return !el.closest('.hero, .band'); });
-  slides.forEach(function (el, i) {
+  var alterna = 0;
+  slides.forEach(function (el) {
     el.classList.remove('reveal');
     if (reduceMotion || !('IntersectionObserver' in window)) return;
+    // nella sua riga: la foto a sinistra entra da sinistra, quella a destra da destra
+    // (le vicine non si incrociano); le foto centrate, una per riga, si alternano
+    var r = el.getBoundingClientRect();
+    var pr = el.parentElement.getBoundingClientRect();
+    var offset = (r.left + r.width / 2) - (pr.left + pr.width / 2);
+    var fromLeft = Math.abs(offset) < pr.width * 0.08 ? (alterna++ % 2 === 0) : offset < 0;
     el.classList.add('slide');
-    el.style.setProperty('--dx', (i % 2 === 0 ? -48 : 48) + 'px');
+    el.style.setProperty('--dx', (fromLeft ? -56 : 56) + 'px');
   });
   if (!reduceMotion && 'IntersectionObserver' in window) {
     var slideIo = new IntersectionObserver(function (entries) {
       var batch = 0;
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
+        var el = entry.target;
+        slideIo.unobserve(el); // una sola volta
         // piccolo ritardo tra immagini che entrano insieme
-        entry.target.style.setProperty('--delay', Math.min(batch, 3) * 0.09 + 's');
+        el.style.setProperty('--delay', Math.min(batch, 3) * 0.09 + 's');
         batch++;
-        entry.target.classList.add('is-in');
-        slideIo.unobserve(entry.target); // una sola volta
+        // parte solo quando la foto è caricata: con connessioni lente
+        // l'animazione non deve svolgersi su un riquadro ancora vuoto
+        var img = el.querySelector('img');
+        var start = function () {
+          window.requestAnimationFrame(function () { el.classList.add('is-in'); });
+        };
+        if (img && !img.complete) {
+          img.addEventListener('load', start, { once: true });
+          img.addEventListener('error', start, { once: true });
+        } else {
+          start();
+        }
       });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.2 });
     slides.forEach(function (el) { slideIo.observe(el); });
-  }
-
-  /* ---------- Puntatore a forma di calice ---------- */
-  var cursore = document.querySelector('.cursore');
-  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
-  if (cursore && finePointer.matches) {
-    var clickable = 'a, button, summary, label, select, [role="button"], .gallery__item';
-    var textField = 'input:not([type="radio"]):not([type="checkbox"]):not([type="submit"]):not([type="button"]), textarea';
-
-    var moveCursor = function (e) {
-      if (e.pointerType && e.pointerType !== 'mouse') return;
-      if (!root.classList.contains('has-cursor')) root.classList.add('has-cursor');
-      // la punta (3,3) del disegno coincide con il punto del clic
-      cursore.style.transform = 'translate3d(' + (e.clientX - 3) + 'px,' + (e.clientY - 3) + 'px,0)';
-      cursore.classList.add('is-on');
-      var t = e.target;
-      var inText = !!(t.closest && t.closest(textField));
-      cursore.classList.toggle('is-text', inText);
-      cursore.classList.toggle('is-link', !inText && !!(t.closest && t.closest(clickable)));
-    };
-    document.addEventListener('pointermove', moveCursor, { passive: true });
-    document.addEventListener('pointerdown', function (e) { if (e.pointerType === 'mouse') cursore.classList.add('is-down'); });
-    document.addEventListener('pointerup', function () { cursore.classList.remove('is-down'); });
-    // fuori dalla finestra o sopra la mappa (iframe) il calice si nasconde
-    document.documentElement.addEventListener('mouseleave', function () { cursore.classList.remove('is-on'); });
-    document.querySelectorAll('iframe').forEach(function (f) {
-      f.addEventListener('mouseenter', function () { cursore.classList.remove('is-on'); });
-    });
   }
 
   /* ---------- Comparsa leggera allo scroll ---------- */
