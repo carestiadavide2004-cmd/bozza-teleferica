@@ -28,6 +28,7 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
+  overflow-x: clip;
   scroll-behavior: smooth;
   scroll-padding-top: var(--header-h);
   -webkit-text-size-adjust: 100%;
@@ -41,6 +42,7 @@ body {
   font-size: 1.0625rem;
   line-height: 1.65;
   overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -531,7 +533,7 @@ p { margin: 0; }
 
 /* ---------- Sezioni ---------- */
 
-.section { padding-block: clamp(4.5rem, 10vw, 8rem); }
+.section { padding-block: clamp(4.5rem, 10vw, 8rem); overflow-x: clip; }
 
 /* Cornice ad arco: richiama il colonnato del giardino */
 .arch {
@@ -1386,6 +1388,57 @@ p { margin: 0; }
 }
 .toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
 
+/* ---------- Puntatore a forma di calice (solo mouse) ---------- */
+
+.cursore { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  html.has-cursor,
+  html.has-cursor * { cursor: none !important; }
+  /* nei campi di testo resta il cursore normale per scrivere */
+  html.has-cursor input:not([type="radio"]):not([type="checkbox"]):not([type="submit"]):not([type="button"]),
+  html.has-cursor textarea { cursor: text !important; }
+
+  .cursore {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    display: block;
+    width: 24px;
+    height: 32px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .2s ease;
+    will-change: transform;
+  }
+  .cursore.is-on { opacity: 1; }
+  .cursore.is-text { opacity: 0; }
+  .cursore__in {
+    width: 24px;
+    height: 32px;
+    transform-origin: 3px 3px; /* la punta resta ferma mentre il calice si ingrandisce */
+    transition: transform .35s var(--ease);
+  }
+  .cursore__in svg { display: block; filter: drop-shadow(0 1px 1.5px rgba(30, 33, 18, .25)); }
+  .cursore.is-link .cursore__in { transform: scale(1.35); }
+  .cursore.is-down .cursore__in { transform: scale(.9); }
+  .cursore.is-link.is-down .cursore__in { transform: scale(1.2); }
+}
+
+/* ---------- Immagini: entrata laterale alternata ---------- */
+
+.js .slide {
+  opacity: 0;
+  transform: translate3d(var(--dx, 48px), 0, 0);
+  transition: opacity .8s var(--ease), transform .8s var(--ease);
+  transition-delay: var(--delay, 0s);
+}
+.js .slide.is-in { opacity: 1; transform: none; }
+@media (max-width: 599px) {
+  .js .slide { transform: translate3d(calc(var(--dx, 48px) * .85), 0, 0); }
+  .js .slide.is-in { transform: none; }
+}
+
 /* ---------- Comparsa allo scroll ---------- */
 
 .js .reveal {
@@ -1526,6 +1579,8 @@ p { margin: 0; }
     transition-delay: 0s !important;
   }
   .js .reveal { opacity: 1; transform: none; }
+  .js .slide { opacity: 1; transform: none; }
+  .cursore__in { transition: none; }
   .scroll-hint__line::after { display: none; }
   .chiama__btn::before { animation: none; display: none; }
   .btn--contattaci { animation: none; }

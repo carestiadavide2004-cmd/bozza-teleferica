@@ -150,6 +150,59 @@
     if (e.target.closest('a')) closeMenu(false);
   });
 
+  /* ---------- Immagini piccole: entrano di lato, alternando sinistra e destra ---------- */
+  // escluse le immagini a tutta larghezza (hero e fasce)
+  var slides = Array.prototype.slice.call(document.querySelectorAll('main figure, main .gallery__item'))
+    .filter(function (el) { return !el.closest('.hero, .band'); });
+  slides.forEach(function (el, i) {
+    el.classList.remove('reveal');
+    if (reduceMotion || !('IntersectionObserver' in window)) return;
+    el.classList.add('slide');
+    el.style.setProperty('--dx', (i % 2 === 0 ? -48 : 48) + 'px');
+  });
+  if (!reduceMotion && 'IntersectionObserver' in window) {
+    var slideIo = new IntersectionObserver(function (entries) {
+      var batch = 0;
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        // piccolo ritardo tra immagini che entrano insieme
+        entry.target.style.setProperty('--delay', Math.min(batch, 3) * 0.09 + 's');
+        batch++;
+        entry.target.classList.add('is-in');
+        slideIo.unobserve(entry.target); // una sola volta
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+    slides.forEach(function (el) { slideIo.observe(el); });
+  }
+
+  /* ---------- Puntatore a forma di calice ---------- */
+  var cursore = document.querySelector('.cursore');
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  if (cursore && finePointer.matches) {
+    var clickable = 'a, button, summary, label, select, [role="button"], .gallery__item';
+    var textField = 'input:not([type="radio"]):not([type="checkbox"]):not([type="submit"]):not([type="button"]), textarea';
+
+    var moveCursor = function (e) {
+      if (e.pointerType && e.pointerType !== 'mouse') return;
+      if (!root.classList.contains('has-cursor')) root.classList.add('has-cursor');
+      // la punta (3,3) del disegno coincide con il punto del clic
+      cursore.style.transform = 'translate3d(' + (e.clientX - 3) + 'px,' + (e.clientY - 3) + 'px,0)';
+      cursore.classList.add('is-on');
+      var t = e.target;
+      var inText = !!(t.closest && t.closest(textField));
+      cursore.classList.toggle('is-text', inText);
+      cursore.classList.toggle('is-link', !inText && !!(t.closest && t.closest(clickable)));
+    };
+    document.addEventListener('pointermove', moveCursor, { passive: true });
+    document.addEventListener('pointerdown', function (e) { if (e.pointerType === 'mouse') cursore.classList.add('is-down'); });
+    document.addEventListener('pointerup', function () { cursore.classList.remove('is-down'); });
+    // fuori dalla finestra o sopra la mappa (iframe) il calice si nasconde
+    document.documentElement.addEventListener('mouseleave', function () { cursore.classList.remove('is-on'); });
+    document.querySelectorAll('iframe').forEach(function (f) {
+      f.addEventListener('mouseenter', function () { cursore.classList.remove('is-on'); });
+    });
+  }
+
   /* ---------- Comparsa leggera allo scroll ---------- */
   var reveals = document.querySelectorAll('.reveal');
   if (reduceMotion || !('IntersectionObserver' in window)) {
