@@ -141,6 +141,14 @@
     if (returnFocus) burger.focus();
   }
 
+  /* ---------- Il nome in alto riporta in cima ---------- */
+  // l'header è fisso, quindi il link #top da solo non farebbe scorrere la pagina
+  document.querySelector('.logo').addEventListener('click', function (e) {
+    e.preventDefault();
+    if (burger.getAttribute('aria-expanded') === 'true') closeMenu(false);
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+  });
+
   burger.addEventListener('click', function () {
     if (burger.getAttribute('aria-expanded') === 'true') closeMenu(true);
     else openMenu();

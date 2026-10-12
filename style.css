@@ -224,6 +224,7 @@ p { margin: 0; }
   align-items: center;
   text-decoration: none;
   line-height: 1;
+  cursor: pointer;
 }
 .logo__script {
   font-family: var(--f-script);
