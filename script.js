@@ -22,8 +22,8 @@
   var formSectionVisible = false;
 
   function updateHeader() {
-    var limit = hero ? hero.offsetHeight - header.offsetHeight - 40 : 40;
-    header.classList.toggle('is-solid', window.scrollY > limit);
+    // pieno appena si scorre: il titolo dell'hero non passa mai sotto il logo trasparente
+    header.classList.toggle('is-solid', window.scrollY > 40);
   }
 
   /* ---------- Barra contatti su telefono ---------- */
@@ -37,17 +37,75 @@
     document.body.classList.toggle('callbar-on', show && window.innerWidth < 960);
   }
 
-  var richiesta = document.getElementById('richiesta');
-  if ('IntersectionObserver' in window && richiesta) {
-    new IntersectionObserver(function (entries) {
-      formSectionVisible = entries[0].isIntersecting;
+  // la barra sparisce nel modulo e vicino al blocco con il numero di telefono
+  var hideZones = ['richiesta', 'contatti'].map(function (id) { return document.getElementById(id); }).filter(Boolean);
+  var zonesInView = {};
+  if ('IntersectionObserver' in window && hideZones.length) {
+    var zoneIo = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) { zonesInView[entry.target.id] = entry.isIntersecting; });
+      formSectionVisible = Object.keys(zonesInView).some(function (k) { return zonesInView[k]; });
       updateCallbar();
-    }, { rootMargin: '0px 0px -25% 0px' }).observe(richiesta);
+    }, { rootMargin: '0px 0px -25% 0px' });
+    hideZones.forEach(function (z) { zoneIo.observe(z); });
+  }
+
+  /* ---------- Hero e fasce: sfocatura e parallax allo scroll ---------- */
+  var heroMedia = document.querySelector('.hero__media');
+  var heroShade = document.querySelector('.hero__shade');
+  var bands = Array.prototype.slice.call(document.querySelectorAll('.band'));
+  var ticking = false;
+
+  function isDesktop() { return window.innerWidth >= 960; }
+
+  function updateEffects() {
+    ticking = false;
+    var vh = window.innerHeight;
+    var desktop = isDesktop();
+
+    if (hero && heroMedia) {
+      var h = hero.offsetHeight;
+      var p = Math.min(Math.max(window.scrollY / h, 0), 1);
+      if (p < 1) {
+        heroMedia.style.transform = 'translate3d(0,' + (p * h * (desktop ? 0.3 : 0.15)).toFixed(1) + 'px,0)';
+        heroMedia.style.filter = p > 0.01 ? 'blur(' + (p * (desktop ? 8 : 4)).toFixed(2) + 'px)' : '';
+        heroShade.style.opacity = (p * 0.45).toFixed(3);
+      }
+    }
+
+    bands.forEach(function (band) {
+      var r = band.getBoundingClientRect();
+      if (r.bottom < -50 || r.top > vh + 50) return;
+      var progress = (r.top + r.height / 2 - vh / 2) / vh; // circa da +0,8 a -0,8
+      var shift = -progress * r.height * (desktop ? 0.2 : 0.1);
+      band.querySelector('.band__media').style.transform = 'translate3d(0,' + shift.toFixed(1) + 'px,0)';
+    });
+  }
+
+  function requestEffects() {
+    if (reduceMotion || ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(updateEffects);
+  }
+
+  // la scritta delle fasce compare con una dissolvenza
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    bands.forEach(function (b) { b.classList.add('is-visible'); });
+  } else {
+    var bandIo = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          bandIo.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.35 });
+    bands.forEach(function (b) { bandIo.observe(b); });
   }
 
   function onScroll() {
     updateHeader();
     updateCallbar();
+    requestEffects();
   }
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
@@ -150,11 +208,7 @@
   });
 
   /* ---------- Lightbox del giardino ---------- */
-  var items = Array.prototype.slice.call(document.querySelectorAll('.gallery__item'));
-  var photos = items.map(function (btn) {
-    var img = btn.querySelector('img');
-    return { src: img.getAttribute('src'), alt: img.getAttribute('alt') };
-  });
+  var photos = [];
   var lb = document.getElementById('lightbox');
   var lbImg = lb.querySelector('.lightbox__img');
   var lbCount = document.getElementById('lb-count');
@@ -163,7 +217,6 @@
   var current = 0;
   var lastTrigger = null;
 
-  photos.forEach(function () { lbDots.appendChild(document.createElement('span')); });
 
   function preload(index) {
     var p = photos[(index + photos.length) % photos.length];
@@ -193,8 +246,12 @@
     preload(current - 1);
   }
 
-  function openLightbox(index, trigger) {
+  function openLightbox(list, name, index, trigger) {
     lastTrigger = trigger;
+    photos = list;
+    lb.setAttribute('aria-label', 'Galleria: ' + name);
+    lbDots.innerHTML = '';
+    photos.forEach(function () { lbDots.appendChild(document.createElement('span')); });
     show(index);
     lb.hidden = false;
     void lb.offsetWidth;
@@ -214,9 +271,17 @@
     if (lastTrigger) lastTrigger.focus();
   }
 
-  items.forEach(function (btn, i) {
-    btn.setAttribute('aria-label', 'Ingrandisci: ' + photos[i].alt);
-    btn.addEventListener('click', function () { openLightbox(i, btn); });
+  document.querySelectorAll('[data-gallery]').forEach(function (gallery) {
+    var name = gallery.getAttribute('data-gallery');
+    var buttons = Array.prototype.slice.call(gallery.querySelectorAll('.gallery__item'));
+    var list = buttons.map(function (btn) {
+      var img = btn.querySelector('img');
+      return { src: img.getAttribute('src'), alt: img.getAttribute('alt') };
+    });
+    buttons.forEach(function (btn, i) {
+      btn.setAttribute('aria-label', 'Ingrandisci: ' + list[i].alt);
+      btn.addEventListener('click', function () { openLightbox(list, name, i, btn); });
+    });
   });
 
   lb.querySelector('.lightbox__close').addEventListener('click', closeLightbox);

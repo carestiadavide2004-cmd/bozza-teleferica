@@ -79,11 +79,12 @@
     <ul class="menu__list">
       <li><a href="#ristorante">Il ristorante</a></li>
       <li><a href="#eventi">Eventi e cerimonie</a></li>
+      <li><a href="#cucina">La cucina e i buffet</a></li>
       <li><a href="#come-organizziamo">Come organizziamo il vostro evento</a></li>
       <li><a href="#giardino">Il giardino</a></li>
       <li><a href="#richiesta">Richiedi un preventivo</a></li>
       <li><a href="#domande">Domande frequenti</a></li>
-      <li><a href="#dove">Dove siamo</a></li>
+      <li><a href="#contatti">Contatti e dove siamo</a></li>
     </ul>
     <div class="menu__foot">
       <a class="menu__tel" href="tel:+390858579011">085 857 9011</a>
@@ -94,14 +95,17 @@
   <main id="contenuto">
     <!-- HERO -->
     <section class="hero" aria-labelledby="hero-title">
-      <img class="hero__img" src="img/villa-facciata-tappeto-rosso.jpg" alt="La facciata gialla di Villa Anna con la scalinata bianca e il tappeto rosso, tra fiori e alberi" width="1600" height="1200" fetchpriority="high">
+      <div class="hero__media">
+        <img class="hero__img" src="img/villa-facciata-tappeto-rosso.jpg" alt="La facciata gialla di Villa Anna con la scalinata bianca e il tappeto rosso, tra fiori e alberi" width="1600" height="1200" fetchpriority="high">
+      </div>
       <div class="hero__veil" aria-hidden="true"></div>
+      <div class="hero__shade" aria-hidden="true"></div>
       <div class="hero__content">
         <h1 class="hero__title" id="hero-title">Un ristorante immerso nel giardino di una villa</h1>
         <p class="hero__lead">Cucina italiana a Lettomanoppello, tra fontane, statue e grandi alberi. E un gazebo in giardino per i giorni da ricordare.</p>
         <div class="hero__ctas">
-          <a class="btn btn--bordeaux" href="tel:+390858579011">Prenota un tavolo</a>
-          <a class="btn btn--light" href="#richiesta">Organizza il tuo evento</a>
+          <a class="btn btn--hero btn--hero-main" href="#contatti">Prenota un tavolo</a>
+          <a class="btn btn--hero btn--hero-alt" href="#contatti">Organizza il tuo evento</a>
         </div>
         <a class="badge badge--hero" href="https://www.google.com/maps/search/?api=1&amp;query=Ristorante+La+Teleferica+Villa+Anna+Lettomanoppello" target="_blank" rel="noopener" aria-label="4,8 stelle su 5 su Google, 17 recensioni. Apri la scheda Google (si apre in una nuova scheda)">
           <span class="badge__stars" aria-hidden="true">★★★★★</span>
@@ -142,7 +146,7 @@
         </div>
         <div class="ristorante__media">
           <figure class="arch arch--tall reveal">
-            <img src="img/sala.jpg" alt="Una sala di Villa Anna con tavola rotonda apparecchiata, sedie rivestite e tende chiare" width="1600" height="899" loading="lazy">
+            <img src="img/sala-tende-verdi.jpg" alt="La sala interna di Villa Anna con tavoli rotondi apparecchiati, sedie rivestite, lampadari e tende verdi alle finestre" width="1600" height="900" loading="lazy">
           </figure>
           <figure class="ristorante__tavola reveal">
             <img src="img/tavola-apparecchiata.jpg" alt="Tavola apparecchiata con centrotavola di rose bianche e nastro verde acqua" width="1600" height="971" loading="lazy">
@@ -193,6 +197,23 @@
           </li>
         </ul>
 
+        <div class="nozze">
+          <div class="nozze__text reveal">
+            <h3 class="nozze__title">Il giorno del vostro matrimonio</h3>
+            <p>Il sì sotto il gazebo, le foto in giardino, il brindisi e il taglio della torta nelle sale della villa: tutta la giornata in un unico luogo, senza spostamenti.</p>
+          </div>
+          <div class="nozze__foto">
+            <figure class="nozze__sposi reveal">
+              <img src="img/sposi-torta-nuziale.jpg" alt="Gli sposi si baciano accanto a una grande torta nuziale a più piani in sala" width="960" height="637" loading="lazy">
+              <figcaption>Gli sposi e la torta nuziale</figcaption>
+            </figure>
+            <figure class="nozze__auto reveal">
+              <img src="img/auto-epoca-gazebo.jpg" alt="Un'auto d'epoca bianca con nastri lilla davanti al gazebo, con gli ospiti in giardino" width="414" height="414" loading="lazy">
+              <figcaption>L'auto degli sposi davanti al gazebo</figcaption>
+            </figure>
+          </div>
+        </div>
+
         <div class="forti">
           <figure class="arch arch--wide forti__gazebo reveal">
             <img src="img/gazebo-cerimonie.jpg" alt="Il gazebo bianco in giardino allestito per una cerimonia, con tappeto rosso, lanterne e sedie rivestite" width="1600" height="1200" loading="lazy">
@@ -237,6 +258,37 @@
       </div>
     </section>
 
+    <!-- LA CUCINA E I BUFFET -->
+    <section class="section cucina" id="cucina" aria-labelledby="cucina-title">
+      <div class="wrap cucina__grid">
+        <div class="cucina__text reveal">
+          <h2 class="title" id="cucina-title">La cucina e i buffet</h2>
+          <p class="intro">Nelle cerimonie la tavola diventa parte della festa. Angurie intagliate a forma di rose, frutta composta come una scultura, buffet di pesce e crostacei, torte decorate con i fiori.</p>
+          <p class="cucina__more">Ogni piatto e ogni buffet viene presentato con la stessa cura che mettiamo nell'allestimento delle sale. Tocca una foto per ingrandirla.</p>
+        </div>
+        <div class="piatti" data-gallery="Cucina e buffet">
+          <button class="gallery__item piatto reveal" type="button">
+            <img src="img/anguria-intagliata-rose.jpg" alt="Anguria intagliata a forma di rose con foglie verdi" width="414" height="414" loading="lazy">
+          </button>
+          <button class="gallery__item piatto reveal" type="button">
+            <img src="img/buffet-pesce-anguria.jpg" alt="Buffet di crostacei e gamberi disposti a raggiera attorno a un'anguria intagliata a forma di pesce" width="414" height="414" loading="lazy">
+          </button>
+          <button class="gallery__item piatto reveal" type="button">
+            <img src="img/salmone-crostacei.jpg" alt="Salmone intero con scampi, limoni, pomodorini e verdure su un vassoio di vetro" width="414" height="414" loading="lazy">
+          </button>
+          <button class="gallery__item piatto reveal" type="button">
+            <img src="img/frutta-intagliata-cigno.jpg" alt="Composizione di frutta con un cigno intagliato nel melone e un'anguria decorata a fiori" width="414" height="414" loading="lazy">
+          </button>
+          <button class="gallery__item piatto reveal" type="button">
+            <img src="img/buffet-frutta.jpg" alt="Buffet di frutta con ananas, arance, uva e banane accanto ai dolci in bicchierini" width="414" height="414" loading="lazy">
+          </button>
+          <button class="gallery__item piatto reveal" type="button">
+            <img src="img/torta-cigni-girasoli.jpg" alt="Composizione di torte nuziali con cigni e girasoli, con gli sposini in cima" width="414" height="414" loading="lazy">
+          </button>
+        </div>
+      </div>
+    </section>
+
     <!-- COME ORGANIZZIAMO -->
     <section class="section passi" id="come-organizziamo" aria-labelledby="passi-title">
       <div class="wrap">
@@ -273,6 +325,14 @@
       </div>
     </section>
 
+    <!-- FASCIA: IL GIORNO PIÙ BELLO -->
+    <section class="band" aria-label="Il giardino di Villa Anna">
+      <div class="band__media">
+        <img src="img/giardino-fontana-scalinata.jpg" alt="Fontana con statua ai piedi di una doppia scalinata in pietra nel giardino di Villa Anna" width="1511" height="610" loading="lazy">
+      </div>
+      <p class="band__text">Il giorno più bello merita il posto più bello</p>
+    </section>
+
     <!-- GIARDINO -->
     <section class="section giardino" id="giardino" aria-labelledby="giardino-title">
       <div class="wrap">
@@ -281,7 +341,7 @@
           <p class="intro">Scalinate in pietra, fontane con le statue, archi fioriti e lampioni per la sera. Tocca una foto per ingrandirla.</p>
         </div>
 
-        <div class="gallery">
+        <div class="gallery" data-gallery="Il giardino">
           <button class="gallery__item g-fontana reveal" type="button">
             <img src="img/fontana-statua.jpg" alt="Statua femminile al centro di una fontana, con gerani in primo piano" width="900" height="1600" loading="lazy">
           </button>
@@ -294,13 +354,10 @@
                 <img src="img/giardino-vista-alto.jpg" alt="Il giardino visto dall'alto: fontana, scalinate, prato e gazebo" width="640" height="480" loading="lazy">
               </button>
               <button class="gallery__item g-rose reveal" type="button">
-                <img src="img/statue-archi-rose.jpg" alt="Statue classiche tra rose rosse e archi bianchi nel giardino" width="720" height="478" loading="lazy">
+                <img src="img/fontana-gazebo-archi.jpg" alt="Statua con anfora al centro di una fontana sotto il gazebo, con gli archi bianchi e le statue sullo sfondo" width="720" height="479" loading="lazy">
               </button>
             </div>
           </div>
-          <button class="gallery__item g-scalinata reveal" type="button">
-            <img src="img/giardino-fontana-scalinata.jpg" alt="Fontana con statua ai piedi di una doppia scalinata in pietra con ringhiere in ferro battuto" width="1511" height="610" loading="lazy">
-          </button>
         </div>
       </div>
     </section>
@@ -444,8 +501,33 @@
       </div>
     </section>
 
+    <!-- FASCIA: BENVENUTI -->
+    <section class="band band--welcome" aria-label="L'entrata di Villa Anna">
+      <div class="band__media">
+        <img src="img/entrata-cancello-villa.jpg" alt="Il cancello in ferro battuto aperto sul viale in pietra, con la villa gialla sullo sfondo" width="960" height="638" loading="lazy">
+      </div>
+      <p class="band__text">Benvenuti a Villa Anna</p>
+    </section>
+
     <!-- DOVE SIAMO -->
     <section class="section dove" id="dove" aria-labelledby="dove-title">
+      <div class="wrap">
+        <div class="chiama reveal" id="contatti">
+          <p class="chiama__invite">Chiamateci, saremo felici di accogliervi</p>
+          <a class="chiama__numero" href="tel:+390858579011" aria-label="Chiama lo 085 857 9011">085&nbsp;857&nbsp;9011</a>
+          <div class="chiama__azioni">
+            <a class="btn chiama__btn" href="tel:+390858579011">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5h2.6l1.4 4.2-2 1.4a12 12 0 0 0 6.3 6.3l1.4-2 4.2 1.4v2.6a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z"/></svg>
+              Chiama ora
+            </a>
+            <button class="btn btn--outline chiama__copia" type="button" data-copy="085 857 9011">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="12" rx="1.5"/><path d="M15.5 8.5V5a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 5v10A1.5 1.5 0 0 0 6 16.5h2.5"/></svg>
+              Copia numero
+            </button>
+          </div>
+          <p class="chiama__note">Per orari e prenotazioni chiamateci.</p>
+        </div>
+      </div>
       <div class="wrap dove__grid">
         <div class="dove__info reveal">
           <h2 class="title" id="dove-title">Dove siamo</h2>
@@ -453,11 +535,7 @@
             Via Provinciale per Scafa<br>
             65020 Lettomanoppello (PE)
           </address>
-          <p class="dove__tel"><a href="tel:+390858579011">085 857 9011</a></p>
-          <p class="note">Per orari e prenotazioni chiamateci.</p>
           <div class="dove__btns">
-            <a class="btn btn--bordeaux" href="tel:+390858579011">Chiama</a>
-            <button class="btn btn--outline" type="button" data-copy="085 857 9011">Copia numero</button>
             <a class="btn btn--outline" href="https://www.google.com/maps/search/?api=1&amp;query=Ristorante+La+Teleferica+Villa+Anna+Lettomanoppello" target="_blank" rel="noopener">Apri in Google Maps</a>
           </div>
           <a class="badge badge--light" href="https://www.google.com/maps/search/?api=1&amp;query=Ristorante+La+Teleferica+Villa+Anna+Lettomanoppello" target="_blank" rel="noopener" aria-label="4,8 stelle su 5 su Google, 17 recensioni. Apri la scheda Google (si apre in una nuova scheda)">
